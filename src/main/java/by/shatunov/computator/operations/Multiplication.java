@@ -1,8 +1,10 @@
 package by.shatunov.computator.operations;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 @Data
+@Component
 public class Multiplication implements Calculator {
 
     private Double a;

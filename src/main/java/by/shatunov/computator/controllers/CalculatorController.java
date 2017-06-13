@@ -1,25 +1,30 @@
 package by.shatunov.computator.controllers;
 
 import by.shatunov.computator.Calculate;
+import by.shatunov.computator.operations.Solver;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.annotation.Resource;
 
 @Controller
 public class CalculatorController {
 
-    @RequestMapping(value = "/arithmetic")
-    public String arithmetic(HttpServletRequest request, ModelMap model) {
+    @Resource
+    private Solver solver;
 
-        String expression = request.getParameter("expression");
+    @Resource
+    private Calculate calculate;
+
+    @RequestMapping(value = "/arithmetic")
+    public String arithmetic(ModelMap model, @RequestParam("expression") String expression) {
 
         if (expression != null && expression.matches("[-+*/\\d.]+")) {
-            String result = Calculate.arithmetic(expression);
-            model.addAttribute("expression", expression +" = " + result);
+            String result = calculate.arithmetic(expression);
+            model.addAttribute("expression", expression + " = " + result);
         } else {
             model.addAttribute("expression", "Wrong expression");
         }
@@ -27,15 +32,21 @@ public class CalculatorController {
         return "index";
     }
 
-
     @RequestMapping("/quadratic")
-    public String quadratic(HttpServletRequest request, ModelMap model) {
-        String expression = request.getParameter("expression");
+    public String quadratic(Model model,
+                            @RequestParam("a") Double a,
+                            @RequestParam("b") Double b,
+                            @RequestParam("c") Double c) {
 
-        WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
+        solver.setA(a);
+        solver.setB(b);
+        solver.setC(c);
+        Double resultX1 = solver.getX1();
+        Double resultX2 = solver.getX2();
 
+        model.addAttribute("resultX1", resultX1.toString());
+        model.addAttribute("resultX2", resultX2.toString());
 
-        model.addAttribute("expression", expression);
         return "index";
     }
 }

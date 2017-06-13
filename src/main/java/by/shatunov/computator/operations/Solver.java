@@ -1,18 +1,59 @@
 package by.shatunov.computator.operations;
 
+import lombok.Data;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
+@Data
+@Component
 public class Solver implements Quadratic {
 
+    @Resource(name = "addition")
     private Calculator plus;
+
+    @Resource(name = "subtraction")
     private Calculator minus;
+
+    @Resource(name = "multiplication")
     private Calculator multiply;
+
+    @Resource(name = "division")
     private Calculator divide;
 
     private Double a;
     private Double b;
     private Double c;
 
-    private Double d = calculateDiscriminant(a, b, c);
+    public Solver() {
+    }
+
+    public Solver(Calculator plus, Calculator minus, Calculator multiply, Calculator divide) {
+        this.plus = plus;
+        this.minus = minus;
+        this.multiply = multiply;
+        this.divide = divide;
+    }
+
+    @Override
+    public Double getX1() {
+        return getX(plus);
+    }
+
+    @Override
+    public Double getX2() {
+        return getX(minus);
+    }
+
+    private Double getX(Calculator calculator) {
+        Double d = calculateDiscriminant(a, b, c);
+        Double mb = getResult(-1.0, b, multiply);
+        Double sqrtD = Math.sqrt(d);
+        Double up = getResult(mb, sqrtD, calculator);
+        Double down = getResult(2.0, a, multiply);
+
+        return getResult(up, down, divide);
+    }
 
     private Double calculateDiscriminant(Double a, Double b, Double c) {
         Double bb = getResult(b, b, multiply);
@@ -25,90 +66,7 @@ public class Solver implements Quadratic {
     private Double getResult(Double a, Double b, Calculator calc) {
         calc.setA(a);
         calc.setB(b);
+
         return calc.calc();
-    }
-
-    public Solver() {
-    }
-
-    public Double getA() {
-        return a;
-    }
-
-    public void setA(Double a) {
-        this.a = a;
-    }
-
-    public Double getB() {
-        return b;
-    }
-
-    public void setB(Double b) {
-        this.b = b;
-    }
-
-    public Double getC() {
-        return c;
-    }
-
-    public void setC(Double c) {
-        this.c = c;
-    }
-
-    public Double getD() {
-        return d;
-    }
-
-    public void setD(Double d) {
-        this.d = d;
-    }
-
-    public Calculator getPlus() {
-        return plus;
-    }
-
-    public void setPlus(Calculator plus) {
-        this.plus = plus;
-    }
-
-    public Calculator getMinus() {
-        return minus;
-    }
-
-    public void setMinus(Calculator minus) {
-        this.minus = minus;
-    }
-
-    public Calculator getMultiply() {
-        return multiply;
-    }
-
-    public void setMultiply(Calculator multiply) {
-        this.multiply = multiply;
-    }
-
-    public Calculator getDivide() {
-        return divide;
-    }
-
-    public void setDivide(Calculator divide) {
-        this.divide = divide;
-    }
-
-    public Double getX(Double a, Double b, Double c, Calculator calc) {
-        Double mb = getResult(-1.0, b, multiply);
-        Double sqrtD = Math.sqrt(d);
-        Double up = getResult(mb, sqrtD, plus);
-        Double down = getResult(2.0, a, multiply);
-        return getResult(up, down, divide);
-    }
-
-    public Double getX1() {
-
-        return 0.0;
-    }
-
-    public Double getX2() {
-        return 0.0;
     }
 }

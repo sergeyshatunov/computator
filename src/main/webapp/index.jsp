@@ -30,7 +30,9 @@
                 <span id="quadratic_container"><input type="text" id="input_quadratic" name="a" placeholder="a" value=""/>x&#178; +<input type="text" name="b" placeholder="b" value=""/>x +<input type="text" name="c" placeholder="c" value=""/></span><input type="submit" name="submit" id="submit_quadratic" value="="/>
             </form>
         </div>
-        <div class="output"><p class="output-field">${expression}</p></div>
+        <c:if test="${not empty expression}"><div class="output"><p class="output-field">${expression}</p></div></c:if>
+        <c:if test="${not empty resultX1}"><div class="output"><p class="output-field">X1: ${resultX1}</p></div></c:if>
+        <c:if test="${not empty resultX2}"><div class="output"><p class="output-field">X2: ${resultX2}</p></div></c:if>
     </div>
 
     <div class="footer"><p class="copyright">2017, made with &#9829;</p></div>
